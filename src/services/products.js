@@ -1,31 +1,44 @@
 import Product from "../models/products.js"
 
-export const getAllProducts = async ({ category, sort }) => {
-  let query = {}
-
-  if (category) {
-    query.category = category
+export const getAllProducts = async () => {
+  try {
+    // Повертаємо всі продукти без фільтрів
+    const products = await Product.find().populate("shopId");
+    return products;
+  } catch (error) {
+    console.log("Error fetching products:", error);
+    throw error;
   }
+};
 
-  let mongoQuery = Product.find(query).populate("shopId")
+// export const getAllProducts = async ({ category, sort, page = 1, limit = 10 }) => {
+//   let query = {}
 
-  if (sort === "price_asc") {
-    mongoQuery = mongoQuery.sort({ price: 1 })
-  }
+//   if (category) {
+//     query.category = category
+//     console.log(category)
+//   }
 
-  if (sort === "price_desc") {
-    mongoQuery = mongoQuery.sort({ price: -1 })
-  }
+//   let mongoQuery = Product.find(query).populate("shopId")
+//   console.log(products)
 
-  if (sort === "name") {
-    mongoQuery = mongoQuery.sort({ name: 1 })
-  }
+//   if (sort === "price_asc") {
+//     mongoQuery = mongoQuery.sort({ price: 1 })
+//   }
 
-  const skip = (page - 1) * limit
+//   if (sort === "price_desc") {
+//     mongoQuery = mongoQuery.sort({ price: -1 })
+//   }
 
-  mongoQuery = mongoQuery.skip(skip).limit(Number(limit))
+//   if (sort === "name") {
+//     mongoQuery = mongoQuery.sort({ name: 1 })
+//   }
 
-  const products = await mongoQuery
+//   const skip = (page - 1) * limit
 
-  return products
-}
+//   mongoQuery = mongoQuery.skip(skip).limit(Number(limit))
+
+//   const products = await mongoQuery
+
+//   return products
+// }
